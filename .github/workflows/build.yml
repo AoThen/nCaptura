@@ -42,15 +42,13 @@ on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
 
   build:
     strategy:
       matrix:
-        configuration: ["Debug","Release"]
+        configuration: ["Release"] #"Debug",
 
     runs-on: windows-2019  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
@@ -87,23 +85,10 @@ jobs:
 
     # Build the application
     - name: Build the application
-      run: msbuild $env:Solution_Name -t:rebuild -verbosity:diag -property:Configuration=$env:Configuration /p:PublishSingleFile=true
+      run: msbuild $env:Solution_Name -t:rebuild -verbosity:diag -property:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
 
-
-    #   # Build the application with single file option
-    # - name: Build the application
-    #   run: msbuild $env:Solution_Name /t:Rebuild /p:Configuration=$env:Configuration /p:PublishSingleFile=true /p:RuntimeIdentifier=win-x64 /p:PublishTrimmed=true
-    #   env:
-    #     Configuration: ${{ matrix.configuration }}
-
-    #   # Publish the application
-    # - name: Publish the application
-    #   run: dotnet publish $env:Solution_Name -c $env:Configuration -r win-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -o ./output
-    #   env:
-    #     Configuration: ${{ matrix.configuration }}
-          
 
     # Upload the application
     - name: Upload the binary

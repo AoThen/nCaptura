@@ -79,30 +79,30 @@ jobs:
     # - name: Execute unit tests
     #   run: dotnet test
 
-    # # Restore the application to populate the obj folder with RuntimeIdentifiers
-    # - name: Restore the application
-    #   run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-    #   env:
-    #     Configuration: ${{ matrix.configuration }}
+    # Restore the application to populate the obj folder with RuntimeIdentifiers
+    - name: Restore the application
+      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
+      env:
+        Configuration: ${{ matrix.configuration }}
 
-    # # Build the application
-    # - name: Build the application
-    #   run: msbuild $env:Solution_Name -t:rebuild -verbosity:diag -property:Configuration=$env:Configuration
-    #   env:
-    #     Configuration: ${{ matrix.configuration }}
-
-
-      # Build the application with single file option
+    # Build the application
     - name: Build the application
-      run: msbuild $env:Solution_Name /t:Rebuild /p:Configuration=$env:Configuration /p:PublishSingleFile=true /p:RuntimeIdentifier=win-x64 /p:PublishTrimmed=true
+      run: msbuild $env:Solution_Name -t:rebuild -verbosity:diag -property:Configuration=$env:Configuration /p:PublishSingleFile=true
       env:
         Configuration: ${{ matrix.configuration }}
 
-      # Publish the application
-    - name: Publish the application
-      run: dotnet publish $env:Solution_Name -c $env:Configuration -r win-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -o ./output
-      env:
-        Configuration: ${{ matrix.configuration }}
+
+    #   # Build the application with single file option
+    # - name: Build the application
+    #   run: msbuild $env:Solution_Name /t:Rebuild /p:Configuration=$env:Configuration /p:PublishSingleFile=true /p:RuntimeIdentifier=win-x64 /p:PublishTrimmed=true
+    #   env:
+    #     Configuration: ${{ matrix.configuration }}
+
+    #   # Publish the application
+    # - name: Publish the application
+    #   run: dotnet publish $env:Solution_Name -c $env:Configuration -r win-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -o ./output
+    #   env:
+    #     Configuration: ${{ matrix.configuration }}
           
 
     # Upload the application

@@ -16,7 +16,7 @@
                       SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="Overlay"/>
+                        <TextBlock Text="覆盖"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

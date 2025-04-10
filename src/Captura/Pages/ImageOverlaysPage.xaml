@@ -23,7 +23,7 @@
                       SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="Image"/>
+                        <TextBlock Text="图片"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

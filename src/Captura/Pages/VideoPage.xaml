@@ -57,7 +57,7 @@
                           ToolTip="Color, Opacity, Border can be configured at Settings / Overlays.">
                     <StackPanel Orientation="Horizontal">
                         <Path Data="{Binding Icons.Timer, Source={StaticResource ServiceLocator}}"/>
-                        <TextBlock Text="Show Elapsed time Overlay"/>
+                        <TextBlock Text="显示时间"/>
                     </StackPanel>
                 </CheckBox>
             </StackPanel>
@@ -158,7 +158,7 @@
             <CheckBox IsChecked="{Binding Settings.WindowsSettings.UseGdi}"
                       Margin="0,2">
                 <TextBlock TextWrapping="Wrap">
-                    Use GDI instead of DesktopDuplication <LineBreak/>
+                    使用GDI代替 DesktopDuplication <LineBreak/>
                     <Run Text="(Requires App Restart)"
                          FontSize="10"
                          FontWeight="Light"/>

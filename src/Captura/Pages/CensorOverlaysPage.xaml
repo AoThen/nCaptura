@@ -18,7 +18,7 @@
                       SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="Censor"/>
+                        <TextBlock Text="遮挡"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

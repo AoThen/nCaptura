@@ -83,7 +83,7 @@
                                         Margin="0,5"/>
                 </Grid>
 
-                <CheckBox Content="Show Repeat Counter"
+                <CheckBox Content="显示重复计数器"
                           IsChecked="{Binding ShowRepeatCounter, Mode=TwoWay}"
                           Margin="0,3"
                           Visibility="{Binding SeparateTextFile, Converter={StaticResource NegatingConverter}}"/>

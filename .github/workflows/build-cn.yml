@@ -94,7 +94,7 @@ jobs:
     - name: Upload the binary
       uses: actions/upload-artifact@v4
       with:
-        name: Captura-${{ env.Configuration }}
+        name: nCaptura-${{ env.Configuration }}-CN
         path: src/Captura/bin/${{ env.Configuration }}/* # or path/to/artifact
       env:
         Configuration: ${{ matrix.configuration }}

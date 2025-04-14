@@ -3,7 +3,15 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
 ![Build Status](https://github.com/mrchipset/nCaptura/actions/workflows/build.yml/badge.svg)
 
-建议和`ffmpeg-n6.1-latest-win64-gpl-6.1`搭配
+> 建议和`ffmpeg-n6.1-latest-win64-gpl-6.1`搭配
+>
+> ffmpeg来源：
+> 
+> https://github.com/BtbN/FFmpeg-Builds/releases
+> 
+> https://github.com/GyanD/codexffmpeg/releases?q=4.4&expanded=true
+> 
+> https://github.com/FFmpeg/FFmpeg/tree/release/4.4
 
 &copy; [Copyright 2019](mathew/LICENSE_MathewSachin.md) Mathew Sachin
 &copy; [Copyright 2024](LICENSE.md) Mr. Chip

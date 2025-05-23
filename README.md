@@ -4,8 +4,9 @@
 ![Build Status](https://github.com/mrchipset/nCaptura/actions/workflows/build.yml/badge.svg)
 
 > intel CPU +N卡建议和`ffmpeg 4.4版本或者6.1`搭配使用
-> 如果全屏录制不生效，设置-视频-启用GDI替代进行录制，环境AMD CPU +A卡
-> thread_queue_size改为1024 应对4K
+> 如果全屏录制不生效，设置-视频-启用GDI替代进行录制，测试环境AMD CPU +A卡
+> 修改thread_queue_size为1024，记得勾选帧率限制，测试环境 ffmpeg4.4
+
 > ffmpeg来源：
 > 
 > https://github.com/BtbN/FFmpeg-Builds/releases

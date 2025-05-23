@@ -63,9 +63,9 @@
             {
                 Set(value);
 
-                if (value && FrameRate > 60)
+                if (value && FrameRate > 30)
                 {
-                    FrameRate = 60;
+                    FrameRate = 30;
                 }
             }
         }

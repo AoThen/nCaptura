@@ -2,18 +2,17 @@
 
 namespace Captura.FFmpeg
 {
-    class AmdH264VideoCodec : FFmpegVideoCodec
+    class AmdHevcVideoCodec : FFmpegVideoCodec
     {
-        const string Descr = "Encode to Mp4: AMD AMF H.264 Encoder (codec h264)";
+        const string Descr = "Encode to Mp4: AMD AMF HEVC encoder (codec hevc)";
 
-        public AmdH264VideoCodec() : base("AMD Mp4 (H.264, AAC)", ".mp4", Descr) { }
+        public AmdHevcVideoCodec() : base("AMD Mp4 (HEVC, AAC)", ".mp4", Descr) { }
 
         public override FFmpegAudioArgsProvider AudioArgsProvider => FFmpegAudioItem.Aac;
 
         public override void Apply(FFmpegSettings Settings, VideoWriterArgs WriterArgs, FFmpegOutputArgs OutputArgs)
         {
-            OutputArgs.AddArg("hwaccel", "amf")
-                .AddArg("c:v", "h264_amf")
+            OutputArgs.AddArg("c:v", "hevc_amf")
                 .AddArg("preset", "fast");
         }
     }

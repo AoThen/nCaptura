@@ -97,7 +97,7 @@
                       Margin="7,0"/>
         <StackPanel Margin="5"
                     Grid.Column="2">
-            <Label Content="Toggle Region Picker"
+            <Label Content="切换区域选取器"
                    FontWeight="Bold"
                    Margin="0,5"/>
 

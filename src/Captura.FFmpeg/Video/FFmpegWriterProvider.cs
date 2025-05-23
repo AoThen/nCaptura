@@ -25,6 +25,7 @@ namespace Captura.FFmpeg
 
             // Hardware
             yield return new QsvHevcVideoCodec();
+            yield return new AmdH264VideoCodec();
             yield return NvencVideoCodec.CreateH264();
             yield return NvencVideoCodec.CreateHevc();
 

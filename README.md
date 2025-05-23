@@ -3,8 +3,8 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE.md)
 ![Build Status](https://github.com/mrchipset/nCaptura/actions/workflows/build.yml/badge.svg)
 
-> 建议和`ffmpeg-n6.1-latest-win64-gpl-6.1`搭配
->
+> intel CPU +N卡建议和`ffmpeg 4.4版本或者6.1`搭配使用
+> 如果全屏录制不生效，设置-视频-启用GDI替代进行录制，环境AMD CPU +A卡
 > ffmpeg来源：
 > 
 > https://github.com/BtbN/FFmpeg-Builds/releases

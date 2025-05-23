@@ -82,7 +82,7 @@
                    Opacity="0.9">
             FFmpeg adds support for more output formats to Captura.<LineBreak/>
             Latest build of FFmpeg is downloaded. This can also be used to update FFmpeg.<LineBreak/>
-            The Download size is nearly 70 MB.
+            The Download size is nearly 90 MB. 
         </TextBlock>
 
         <Grid HorizontalAlignment="Center"

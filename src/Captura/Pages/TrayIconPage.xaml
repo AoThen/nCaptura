@@ -31,7 +31,7 @@
             </CheckBox>
 
             <DockPanel Margin="0,10">
-                <Label Content="Left Click Action"
+                <Label Content="左键单击操作"
                        Margin="0,0,10,0"/>
 
                 <ComboBox SelectedValue="{Binding Settings.Tray.LeftClickAction, Mode=TwoWay}"

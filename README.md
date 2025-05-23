@@ -5,6 +5,7 @@
 
 > intel CPU +N卡建议和`ffmpeg 4.4版本或者6.1`搭配使用
 > 如果全屏录制不生效，设置-视频-启用GDI替代进行录制，环境AMD CPU +A卡
+> thread_queue_size改为1024 应对4K
 > ffmpeg来源：
 > 
 > https://github.com/BtbN/FFmpeg-Builds/releases

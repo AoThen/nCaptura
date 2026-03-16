@@ -16,12 +16,18 @@ namespace Captura.Models
 
         public bool IsVisible
         {
-            get => _window.Invoke().IsVisible;
+            get => _window.Invoke().IsVisible && _window.Invoke().WindowState != WindowState.Minimized;
             set
             {
+                var win = _window.Invoke();
                 if (value)
-                    _window.Invoke().Show();
-                else _window.Invoke().Hide();
+                {
+                    if (win.WindowState == WindowState.Minimized)
+                        win.WindowState = WindowState.Normal;
+                    win.Show();
+                    win.Activate();
+                }
+                else win.Hide();
             }
         }
 

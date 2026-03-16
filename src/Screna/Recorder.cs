@@ -258,7 +258,12 @@ namespace Captura.Video
         }
 
         #region Dispose
-        async void Dispose(bool TerminateRecord)
+        /// <summary>
+        /// 释放资源的超时时间（毫秒）
+        /// </summary>
+        const int DisposeTimeoutMs = 10000;
+
+        void Dispose(bool TerminateRecord)
         {
             if (_disposed)
                 return;
@@ -275,7 +280,11 @@ namespace Captura.Video
             {
                 try
                 {
-                    _recordTask.Wait();
+                    // 使用超时保护，避免无限等待
+                    if (!_recordTask.Wait(DisposeTimeoutMs))
+                    {
+                        Debug.WriteLine($"Recorder task did not complete within {DisposeTimeoutMs}ms timeout");
+                    }
                 }
                 catch (AggregateException ex)
                 {
@@ -283,24 +292,36 @@ namespace Captura.Video
                 }
             }
 
-            try
+            // 同步等待帧写入任务完成
+            if (_frameWriteTask != null)
             {
-                if (_frameWriteTask != null)
-                    await _frameWriteTask;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Frame write error during dispose: {ex.Message}");
+                try
+                {
+                    if (!_frameWriteTask.Wait(DisposeTimeoutMs))
+                    {
+                        Debug.WriteLine($"Frame write task did not complete within {DisposeTimeoutMs}ms timeout");
+                    }
+                }
+                catch (AggregateException ex)
+                {
+                    Debug.WriteLine($"Frame write error during dispose: {ex.Flatten().Message}");
+                }
             }
 
-            try
+            // 同步等待音频写入任务完成
+            if (_audioWriteTask != null)
             {
-                if (_audioWriteTask != null)
-                    await _audioWriteTask;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Audio write error during dispose: {ex.Message}");
+                try
+                {
+                    if (!_audioWriteTask.Wait(DisposeTimeoutMs))
+                    {
+                        Debug.WriteLine($"Audio write task did not complete within {DisposeTimeoutMs}ms timeout");
+                    }
+                }
+                catch (AggregateException ex)
+                {
+                    Debug.WriteLine($"Audio write error during dispose: {ex.Flatten().Message}");
+                }
             }
 
             if (_audioProvider != null)
@@ -319,6 +340,7 @@ namespace Captura.Video
             _audioBuffer = _silenceBuffer = null;
 
             _continueCapturing.Dispose();
+            _cancellationTokenSource.Dispose();
         }
 
         /// <summary>

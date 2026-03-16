@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Interop;
+using System.Threading;
 using Captura.Windows.DirectX;
 using Captura.Windows.Gdi;
 using Reactive.Bindings.Extensions;
@@ -15,6 +16,10 @@ namespace Captura.Video
         IntPtr _backBufferPtr;
         Texture _texture;
         readonly VisualSettings _visualSettings;
+        
+        // 跟踪待处理的帧，防止 UI 线程处理前被释放
+        IBitmapFrame _pendingFrame;
+        int _isProcessing = 0;
 
         public void Show()
         {
@@ -44,50 +49,79 @@ namespace Captura.Video
                 return;
             }
 
+            // 如果上一帧还在处理中，跳过当前帧（避免积压）
+            if (Interlocked.CompareExchange(ref _isProcessing, 1, 0) != 0)
+            {
+                Frame.Dispose();
+                return;
+            }
+
+            // 保存帧引用，防止在 UI 线程处理前被释放
+            _pendingFrame = Frame;
+
             var win = MainWindow.Instance;
 
-            win.Dispatcher.Invoke(() =>
+            // 使用 BeginInvoke 异步调用，避免阻塞录制线程
+            win.Dispatcher.BeginInvoke(new Action(() =>
             {
-                win.DisplayImage.Image = null;
-
-                _lastFrame?.Dispose();
-                _lastFrame = Frame;
-
-                Frame = Frame.Unwrap();
-
-                switch (Frame)
+                try
                 {
-                    case DrawingFrame drawingFrame:
-                        try
-                        {
-                            // TODO: Preview is not shown during Webcam only recordings
-                            // This check swallows errors
-                            var h = drawingFrame.Bitmap.Height;
-
-                            if (h == 0)
-                                return;
-                        }
-                        catch { return; }
-
-                        win.WinFormsHost.Visibility = Visibility.Visible;
-                        win.DisplayImage.Image = drawingFrame.Bitmap;
-                        break;
-
-                    case Texture2DFrame texture2DFrame:
-                        win.WinFormsHost.Visibility = Visibility.Collapsed;
-                        if (_d3D9PreviewAssister == null)
-                        {
-                            _d3D9PreviewAssister = new D3D9PreviewAssister(ServiceProvider.Get<IPlatformServices>());
-                            _texture = _d3D9PreviewAssister.GetSharedTexture(texture2DFrame.PreviewTexture);
-
-                            using var surface = _texture.GetSurfaceLevel(0);
-                            _backBufferPtr = surface.NativePointer;
-                        }
-
-                        Invalidate(_backBufferPtr, texture2DFrame.Width, texture2DFrame.Height);
-                        break;
+                    ProcessFrame(_pendingFrame);
                 }
-            });
+                finally
+                {
+                    _pendingFrame = null;
+                    Interlocked.Exchange(ref _isProcessing, 0);
+                }
+            }));
+        }
+
+        void ProcessFrame(IBitmapFrame Frame)
+        {
+            if (Frame == null)
+                return;
+
+            var win = MainWindow.Instance;
+
+            win.DisplayImage.Image = null;
+
+            _lastFrame?.Dispose();
+            _lastFrame = Frame;
+
+            Frame = Frame.Unwrap();
+
+            switch (Frame)
+            {
+                case DrawingFrame drawingFrame:
+                    try
+                    {
+                        // TODO: Preview is not shown during Webcam only recordings
+                        // This check swallows errors
+                        var h = drawingFrame.Bitmap.Height;
+
+                        if (h == 0)
+                            return;
+                    }
+                    catch { return; }
+
+                    win.WinFormsHost.Visibility = Visibility.Visible;
+                    win.DisplayImage.Image = drawingFrame.Bitmap;
+                    break;
+
+                case Texture2DFrame texture2DFrame:
+                    win.WinFormsHost.Visibility = Visibility.Collapsed;
+                    if (_d3D9PreviewAssister == null)
+                    {
+                        _d3D9PreviewAssister = new D3D9PreviewAssister(ServiceProvider.Get<IPlatformServices>());
+                        _texture = _d3D9PreviewAssister.GetSharedTexture(texture2DFrame.PreviewTexture);
+
+                        using var surface = _texture.GetSurfaceLevel(0);
+                        _backBufferPtr = surface.NativePointer;
+                    }
+
+                    Invalidate(_backBufferPtr, texture2DFrame.Width, texture2DFrame.Height);
+                    break;
+            }
         }
 
         void Invalidate(IntPtr BackBufferPtr, int Width, int Height)
@@ -107,6 +141,16 @@ namespace Captura.Video
         {
             var win = MainWindow.Instance;
 
+            // 等待任何待处理的帧完成
+            var startTime = DateTime.UtcNow;
+            while (Interlocked.CompareExchange(ref _isProcessing, 0, 0) != 0)
+            {
+                if ((DateTime.UtcNow - startTime).TotalSeconds > 2)
+                    break;
+                Thread.Sleep(10);
+            }
+
+            // 使用同步调用确保资源释放完成
             win.Dispatcher.Invoke(() =>
             {
                 win.DisplayImage.Image = null;
@@ -114,6 +158,8 @@ namespace Captura.Video
 
                 _lastFrame?.Dispose();
                 _lastFrame = null;
+                _pendingFrame?.Dispose();
+                _pendingFrame = null;
 
                 if (_d3D9PreviewAssister != null)
                 {

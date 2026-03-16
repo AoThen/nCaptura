@@ -185,7 +185,9 @@ namespace Captura.MouseKeyHook.Steps
 
         public void Stop() => _recording = false;
 
+#pragma warning disable CS0067
         public event Action<Exception> ErrorOccurred;
+#pragma warning restore CS0067
 
         public void Dispose()
         {

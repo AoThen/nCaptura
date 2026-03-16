@@ -1,5 +1,6 @@
 ﻿// Adapted from https://github.com/jasonpang/desktop-duplication-net
 
+using SharpDX;
 using SharpDX.DXGI;
 using System;
 using System.Diagnostics;

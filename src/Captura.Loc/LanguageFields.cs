@@ -27,7 +27,9 @@ namespace Captura.Loc
             RaisePropertyChanged(PropertyName);
         }
 
+#pragma warning disable CS0067
         public virtual event Action<CultureInfo> LanguageChanged;
+#pragma warning restore CS0067
 
         public string About
         {

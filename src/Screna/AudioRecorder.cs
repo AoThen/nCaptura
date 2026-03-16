@@ -90,6 +90,8 @@ namespace Captura.Audio
             }
         }
 
+#pragma warning disable CS0067
         public event Action<Exception> ErrorOccurred;
+#pragma warning restore CS0067
     }
 }

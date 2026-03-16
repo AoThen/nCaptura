@@ -54,7 +54,7 @@ namespace Captura.Windows.DesktopDuplication
         public int Width { get; }
         public int Height { get; }
 
-        public Func<Point, Point> PointTransform { get; }
+        public Func<System.Drawing.Point, System.Drawing.Point> PointTransform { get; }
 
         public IEditableFrame Capture()
         {

@@ -94,7 +94,7 @@ namespace Captura
             }
         }
 
-        public void Start(StartCmdOptions StartOptions)
+        public async Task StartAsync(StartCmdOptions StartOptions)
         {
             _settings.IncludeCursor = StartOptions.Cursor;
             _settings.Clicks.Display = StartOptions.Clicks;
@@ -154,11 +154,11 @@ namespace Captura
             }, StartOptions.FileName))
                 return;
 
-            Task.Factory.StartNew(() =>
+            await Task.Factory.StartNew(async () =>
             {
                 Loop(StartOptions);
 
-                _recordingModel.StopRecording().Wait();
+                await _recordingModel.StopRecording();
 
                 Application.Exit();
             });
@@ -167,7 +167,7 @@ namespace Captura
             Application.Run(new ApplicationContext());
         }
 
-        public void Shot(ShotCmdOptions ShotOptions)
+        public async Task ShotAsync(ShotCmdOptions ShotOptions)
         {
             _settings.IncludeCursor = ShotOptions.Cursor;
 
@@ -181,7 +181,7 @@ namespace Captura
                     var win = _platformServices.GetWindow(new IntPtr(ptr));
                     var bmp = _screenShotModel.ScreenShotWindow(win);
 
-                    _screenShotModel.SaveScreenShot(bmp, ShotOptions.FileName).Wait();
+                    await _screenShotModel.SaveScreenShot(bmp, ShotOptions.FileName);
                 }
                 catch
                 {
@@ -192,9 +192,9 @@ namespace Captura
             {
                 var videoSourceKind = HandleVideoSource(ShotOptions);
 
-                var bmp = _screenShotModel.GetScreenShot(videoSourceKind).Result;
+                var bmp = await _screenShotModel.GetScreenShot(videoSourceKind);
 
-                _screenShotModel.SaveScreenShot(bmp, ShotOptions.FileName).Wait();
+                await _screenShotModel.SaveScreenShot(bmp, ShotOptions.FileName);
             }
         }
 

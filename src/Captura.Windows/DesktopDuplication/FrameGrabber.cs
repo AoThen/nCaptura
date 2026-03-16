@@ -104,7 +104,10 @@ namespace Captura.Windows.DesktopDuplication
                 {
                     _acquireTask?.Wait();
                 }
-                catch { }
+                catch (System.Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"FrameGrabber dispose error: {ex.Message}");
+                }
             }
         }
     }

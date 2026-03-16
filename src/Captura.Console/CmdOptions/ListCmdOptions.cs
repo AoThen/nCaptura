@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System.Threading.Tasks;
+using CommandLine;
 
 namespace Captura
 {
@@ -6,11 +7,13 @@ namespace Captura
     // ReSharper disable once ClassNeverInstantiated.Global
     class ListCmdOptions : ICmdlineVerb
     {
-        public void Run()
+        public Task Run()
         {
             var lister = ServiceProvider.Get<ConsoleLister>();
 
             lister.List();
+
+            return Task.CompletedTask;
         }
     }
 }

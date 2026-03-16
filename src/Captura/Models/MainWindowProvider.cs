@@ -34,7 +34,39 @@ namespace Captura.Models
         public void EditImage(string FileName)
         {
             var settings = ServiceProvider.Get<Settings>().ScreenShots;
-            Process.Start(settings.ExternalEditor, $"\"{FileName}\"");
+            var editor = settings.ExternalEditor;
+
+            // 验证编辑器路径
+            if (string.IsNullOrWhiteSpace(editor))
+            {
+                ServiceProvider.Get<IMessageProvider>()?.ShowError("External editor is not configured");
+                return;
+            }
+
+            // 验证文件路径存在
+            if (!System.IO.File.Exists(FileName))
+            {
+                ServiceProvider.Get<IMessageProvider>()?.ShowError("File does not exist");
+                return;
+            }
+
+            // 使用 ProcessStartInfo 并设置安全选项
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = editor,
+                Arguments = $"\"{FileName}\"",
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            try
+            {
+                Process.Start(startInfo);
+            }
+            catch (Exception ex)
+            {
+                ServiceProvider.Get<IMessageProvider>()?.ShowError($"Failed to launch editor: {ex.Message}");
+            }
         }
 
         public void TrimMedia(string FileName)

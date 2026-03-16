@@ -4,6 +4,7 @@ using CommandLine.Text;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Captura
 {
@@ -29,7 +30,7 @@ namespace Captura
             }
         }
 
-        public void Run()
+        public async Task Run()
         {
             if (!File.Exists(FileName))
             {
@@ -45,9 +46,15 @@ namespace Captura
                     var uploader = ServiceProvider.Get<IImageUploader>();
 
                     // TODO: Show progress (on a single line)
-                    var result = uploader.Upload(img, ImageFormats.Png, P => { }).Result;
-
-                    Console.WriteLine(result.Url);
+                    try
+                    {
+                        var result = await uploader.Upload(img, ImageFormats.Png, P => { });
+                        Console.WriteLine(result.Url);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Upload failed: {ex.Message}");
+                    }
                     break;
             }
         }

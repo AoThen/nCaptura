@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using CommandLine;
 using CommandLine.Text;
 
@@ -80,7 +81,7 @@ namespace Captura
             }
         }
 
-        public void Run()
+        public async Task Run()
         {
             // Override settings dir
             if (Settings != null)
@@ -91,7 +92,7 @@ namespace Captura
             using var manager = ServiceProvider.Get<ConsoleManager>();
             manager.CopySettings();
 
-            manager.Start(this);
+            await manager.StartAsync(this);
         }
     }
 }

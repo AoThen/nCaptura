@@ -272,21 +272,36 @@ namespace Captura.Video
 
             // Ensure all threads exit before disposing resources.
             if (TerminateRecord)
-                _recordTask.Wait();
+            {
+                try
+                {
+                    _recordTask.Wait();
+                }
+                catch (AggregateException ex)
+                {
+                    Debug.WriteLine($"Recorder task error during dispose: {ex.Flatten().Message}");
+                }
+            }
 
             try
             {
                 if (_frameWriteTask != null)
                     await _frameWriteTask;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Frame write error during dispose: {ex.Message}");
+            }
 
             try
             {
                 if (_audioWriteTask != null)
                     await _audioWriteTask;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Audio write error during dispose: {ex.Message}");
+            }
 
             if (_audioProvider != null)
             {

@@ -22,10 +22,17 @@ namespace Captura
 
             if (ofd.ShowDialog().GetValueOrDefault())
             {
-                var imgSystem = ServiceProvider.Get<IImagingSystem>();
+                try
+                {
+                    var imgSystem = ServiceProvider.Get<IImagingSystem>();
 
-                using var img = imgSystem.LoadBitmap(ofd.FileName);
-                await img.UploadImage();
+                    using var img = imgSystem.LoadBitmap(ofd.FileName);
+                    await img.UploadImage();
+                }
+                catch (System.Exception ex)
+                {
+                    ServiceProvider.MessageProvider?.ShowError($"Upload failed: {ex.Message}");
+                }
             }
         }
     }

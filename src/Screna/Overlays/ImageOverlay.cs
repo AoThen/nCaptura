@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace Captura.Video
@@ -28,7 +29,10 @@ namespace Captura.Video
 
                 Editor.DrawImage(Image, destRect, Opacity);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Image overlay draw error: {ex.Message}");
+            }
             finally
             {
                 if (_disposeImages)

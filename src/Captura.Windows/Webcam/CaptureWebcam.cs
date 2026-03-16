@@ -191,7 +191,7 @@ namespace Captura.Webcam
             _wantPreviewRendered = false;
 
             try { DestroyGraph(); }
-            catch { }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"DestroyGraph error during dispose: {ex.Message}"); }
 
             _form.Dispose();
 
@@ -502,7 +502,7 @@ namespace Captura.Webcam
             // half of the graph which is unnecessary but
             // harmless here.) (ignore errors)
             try { DerenderGraph(); }
-            catch { }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"DerenderGraph error: {ex.Message}"); }
 
             // Update the state after derender because it
             // depends on correct status. But we also want to

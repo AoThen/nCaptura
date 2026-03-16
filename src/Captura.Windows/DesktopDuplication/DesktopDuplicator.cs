@@ -2,6 +2,7 @@
 
 using SharpDX.DXGI;
 using System;
+using System.Diagnostics;
 using Captura.Video;
 using Captura.Windows.DirectX;
 
@@ -20,13 +21,13 @@ namespace Captura.Windows.DesktopDuplication
             var bounds = Output.Description.DesktopBounds;
             var width = bounds.Right - bounds.Left;
             var height = bounds.Bottom - bounds.Top;
-            
+
             _editorSession = new Direct2DEditorSession(width, height, PreviewWindow);
 
             if (IncludeCursor)
                 _mousePointer = new DxMousePointer(_editorSession);
         }
-        
+
         public IEditableFrame Capture()
         {
             try
@@ -34,12 +35,14 @@ namespace Captura.Windows.DesktopDuplication
                 if (!_duplCapture.Get(_editorSession.DesktopTexture, _mousePointer))
                     return RepeatFrame.Instance;
             }
-            catch
+            catch (SharpDXException ex)
             {
+                Debug.WriteLine($"Desktop capture error: {ex.Message}");
+
                 try { _duplCapture.Init(); }
-                catch
+                catch (Exception initEx)
                 {
-                    // ignored
+                    Debug.WriteLine($"Re-init failed: {initEx.Message}");
                 }
 
                 return RepeatFrame.Instance;
@@ -54,18 +57,27 @@ namespace Captura.Windows.DesktopDuplication
 
         public void Dispose()
         {
-            try { _duplCapture.Dispose(); }
-            catch { }
-            finally { _duplCapture = null; }
+            void SafeDispose(IDisposable disposable, string name)
+            {
+                try
+                {
+                    disposable?.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error disposing {name}: {ex.Message}");
+                }
+            }
+
+            SafeDispose(_duplCapture, nameof(_duplCapture));
+            _duplCapture = null;
 
             // Mouse Pointer disposed later to prevent errors.
-            try { _mousePointer?.Dispose(); }
-            catch { }
-            finally { _mousePointer = null; }
+            SafeDispose(_mousePointer, nameof(_mousePointer));
+            _mousePointer = null;
 
-            try { _editorSession.Dispose(); }
-            catch { }
-            finally { _editorSession = null; }
+            SafeDispose(_editorSession, nameof(_editorSession));
+            _editorSession = null;
         }
     }
 }

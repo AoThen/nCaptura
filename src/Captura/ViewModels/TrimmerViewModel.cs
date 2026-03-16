@@ -285,13 +285,21 @@ namespace Captura
                     To,
                     sfd.FileName,
                     hasAudio);
+
+                MessageBox.Show("Done");
+            }
+            catch (FFmpegNotFoundException)
+            {
+                MessageBox.Show("FFmpeg not found");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Trim failed: {ex.Message}");
             }
             finally
             {
                 _isTrimming.Value = false;
             }
-
-            MessageBox.Show("Done");
         }
     }
 }

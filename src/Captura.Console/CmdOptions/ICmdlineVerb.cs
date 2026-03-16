@@ -1,7 +1,9 @@
-﻿namespace Captura
+﻿using System.Threading.Tasks;
+
+namespace Captura
 {
     interface ICmdlineVerb
     {
-        void Run();
+        Task Run();
     }
 }

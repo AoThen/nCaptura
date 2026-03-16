@@ -125,7 +125,10 @@ namespace Captura
 
                 await _screenShotModel.SaveScreenShot(img);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Webcam capture error: {ex.Message}");
+            }
         }
 
         Rectangle GetPreviewWindowRect()

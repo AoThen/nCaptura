@@ -43,9 +43,20 @@ namespace Captura.FFmpeg
             var w = Args.ImageProvider.Width;
             var h = Args.ImageProvider.Height;
 
-            _videoBuffer = new byte[(int)(w * h * (nv12 ? 1.5 : 4))];
+            // Add resolution limit check (4K = 4096x4096)
+            const int maxWidth = 4096;
+            const int maxHeight = 4096;
+            const long maxBufferSize = 64 * 1024 * 1024; // 64MB
 
-            Console.WriteLine($"Video Buffer Allocated: {_videoBuffer.Length}");
+            if (w > maxWidth || h > maxHeight)
+                throw new ArgumentException($"Resolution {w}x{h} exceeds maximum allowed {maxWidth}x{maxHeight}");
+
+            var bufferSize = (long)(w * h * (nv12 ? 1.5 : 4));
+            if (bufferSize > maxBufferSize)
+                throw new ArgumentException($"Frame buffer size {bufferSize} exceeds maximum {maxBufferSize}");
+
+            _videoBuffer = new byte[bufferSize];
+            Console.WriteLine($"Video Buffer Allocated: {_videoBuffer.Length:N0} bytes");
 
             var videoPipeName = GetPipeName();
 

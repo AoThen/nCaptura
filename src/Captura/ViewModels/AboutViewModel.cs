@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Input;
 using Captura.Loc;
+using Captura.Models;
 using Reactive.Bindings;
 
 namespace Captura.ViewModels
@@ -25,7 +26,37 @@ namespace Captura.ViewModels
             AppVersion = "v" + Version.ToString(3);
 
             HyperlinkCommand = new ReactiveCommand<string>()
-                .WithSubscribe(M => Process.Start(M));
+                .WithSubscribe(OpenUrl);
+        }
+
+        void OpenUrl(string Url)
+        {
+            // 验证 URL 格式
+            if (string.IsNullOrWhiteSpace(Url))
+                return;
+
+            // 只允许 http/https 协议
+            if (Uri.TryCreate(Url, UriKind.Absolute, out var uri))
+            {
+                if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
+                {
+                    ServiceProvider.Get<IMessageProvider>()?.ShowError("Only http/https links are allowed");
+                    return;
+                }
+
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = uri.ToString(),
+                        UseShellExecute = true
+                    });
+                }
+                catch (Exception ex)
+                {
+                    ServiceProvider.Get<IMessageProvider>()?.ShowError($"Failed to open link: {ex.Message}");
+                }
+            }
         }
     }
 }

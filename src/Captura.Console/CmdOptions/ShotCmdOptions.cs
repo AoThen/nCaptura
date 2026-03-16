@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using CommandLine;
 using CommandLine.Text;
 
@@ -29,10 +30,10 @@ namespace Captura
             }
         }
 
-        public void Run()
+        public async Task Run()
         {
             using var manager = ServiceProvider.Get<ConsoleManager>();
-            manager.Shot(this);
+            await manager.ShotAsync(this);
         }
     }
 }

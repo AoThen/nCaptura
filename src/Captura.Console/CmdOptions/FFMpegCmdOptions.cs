@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System.Threading.Tasks;
+using CommandLine;
 
 namespace Captura
 {
@@ -9,12 +10,11 @@ namespace Captura
         [Option("install", HelpText = "Install FFmpeg to specified folder.")]
         public string Install { get; set; }
 
-        public void Run()
+        public async Task Run()
         {
             var ffmpegManager = ServiceProvider.Get<FFmpegConsoleManager>();
 
-            // Need to Wait instead of await otherwise the process will exit
-            ffmpegManager.Run(this).Wait();
+            await ffmpegManager.Run(this);
         }
     }
 }

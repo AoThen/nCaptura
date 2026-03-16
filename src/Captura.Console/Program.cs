@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Captura.Fakes;
 using Captura.Native;
 using CommandLine;
@@ -12,7 +13,7 @@ namespace Captura
     static class Program
     {
         [STAThread]
-        static void Main(string[] Args)
+        static async Task Main(string[] Args)
         {
             User32.SetProcessDPIAware();
 
@@ -25,13 +26,13 @@ namespace Captura
                 .Select(M => M.GetType())
                 .ToArray();
 
-            Parser.Default.ParseArguments(Args, verbTypes)
-                .WithParsed((ICmdlineVerb Verb) =>
+            await Parser.Default.ParseArguments(Args, verbTypes)
+                .WithParsedAsync(async (ICmdlineVerb Verb) =>
                 {
                     // Always display Banner
                     Banner();
 
-                    Verb.Run();
+                    await Verb.Run();
                 });
         }
 

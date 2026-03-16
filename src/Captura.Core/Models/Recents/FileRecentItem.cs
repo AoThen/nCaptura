@@ -83,10 +83,17 @@ namespace Captura.Models
                 return;
             }
 
-            var imgSystem = ServiceProvider.Get<IImagingSystem>();
+            try
+            {
+                var imgSystem = ServiceProvider.Get<IImagingSystem>();
 
-            using var img = imgSystem.LoadBitmap(FileName);
-            await img.UploadImage();
+                using var img = imgSystem.LoadBitmap(FileName);
+                await img.UploadImage();
+            }
+            catch (Exception ex)
+            {
+                ServiceProvider.MessageProvider.ShowError($"Upload failed: {ex.Message}");
+            }
         }
 
         void OnCopyToClipboardExecute()

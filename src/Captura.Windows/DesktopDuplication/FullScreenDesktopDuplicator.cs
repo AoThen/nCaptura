@@ -2,6 +2,7 @@
 
 using SharpDX.DXGI;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Collections.Generic;
@@ -63,16 +64,18 @@ namespace Captura.Windows.DesktopDuplication
                     if (!entry.DuplCapture.Get(_editorSession.DesktopTexture, entry.MousePointer, entry.Location))
                         return RepeatFrame.Instance;
                 }
-                catch
+                catch (SharpDXException ex)
                 {
+                    Debug.WriteLine($"Desktop capture error: {ex.Message}");
+
                     try { entry.DuplCapture.Init(); }
-                    catch
+                    catch (Exception initEx)
                     {
-                        // ignored
+                        Debug.WriteLine($"Re-init failed: {initEx.Message}");
                     }
 
                     return RepeatFrame.Instance;
-                }                
+                }
             }
 
             var editor = new Direct2DEditor(_editorSession);
@@ -87,21 +90,30 @@ namespace Captura.Windows.DesktopDuplication
 
         public void Dispose()
         {
-            foreach (var entry in _outputs)
+            void SafeDispose(IDisposable disposable, string name)
             {
-                try { entry.DuplCapture.Dispose(); }
-                catch { }
-                finally { entry.DuplCapture = null; }
-
-                // Mouse Pointer disposed later to prevent errors.
-                try { entry.MousePointer?.Dispose(); }
-                catch { }
-                finally { entry.MousePointer = null; }
+                try
+                {
+                    disposable?.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error disposing {name}: {ex.Message}");
+                }
             }
 
-            try { _editorSession.Dispose(); }
-            catch { }
-            finally { _editorSession = null; }
+            foreach (var entry in _outputs)
+            {
+                SafeDispose(entry.DuplCapture, nameof(entry.DuplCapture));
+                entry.DuplCapture = null;
+
+                // Mouse Pointer disposed later to prevent errors.
+                SafeDispose(entry.MousePointer, nameof(entry.MousePointer));
+                entry.MousePointer = null;
+            }
+
+            SafeDispose(_editorSession, nameof(_editorSession));
+            _editorSession = null;
         }
     }
 }

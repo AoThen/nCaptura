@@ -32,7 +32,7 @@ namespace Captura.Windows.DesktopDuplication
             Width = bounds.Width;
             Height = bounds.Height;
 
-            PointTransform = P => new Point(P.X - bounds.Left, P.Y - bounds.Top);
+            PointTransform = P => new System.Drawing.Point(P.X - bounds.Left, P.Y - bounds.Top);
 
             _editorSession = new Direct2DEditorSession(Width, Height, PreviewWindow);
 

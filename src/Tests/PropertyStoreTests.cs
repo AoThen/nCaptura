@@ -18,7 +18,7 @@ namespace Captura.Tests
 
             obj.Property = newValue;
 
-            Assert.Equal(obj.Property, newValue);
+            Assert.Equal(newValue, obj.Property);
             Assert.Equal(nameof(obj.Property), propertyName);
         }
 
@@ -27,7 +27,7 @@ namespace Captura.Tests
         {
             var obj = new FakePropertyStore();
             
-            Assert.Equal(obj.Property, FakePropertyStore.DefaultPropertyValue);
+            Assert.Equal(FakePropertyStore.DefaultPropertyValue, obj.Property);
         }
     }
 }

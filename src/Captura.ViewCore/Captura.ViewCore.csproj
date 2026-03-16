@@ -3,6 +3,9 @@
     <TargetFramework>net472</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Captura.Core\Captura.Core.csproj" />
     <ProjectReference Include="..\Screna\Screna.csproj" />
   </ItemGroup>

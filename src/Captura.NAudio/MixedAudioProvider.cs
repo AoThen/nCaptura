@@ -133,7 +133,7 @@ namespace Captura.Audio
                 _innerProvider = new BufferedWaveProvider(waveFormat);
             }
 
-            public WaveFormat WaveFormat => _innerProvider.WaveFormat;
+            WaveFormat IWaveProvider.WaveFormat => _innerProvider.WaveFormat;
 
             public TimeSpan BufferDuration
             {

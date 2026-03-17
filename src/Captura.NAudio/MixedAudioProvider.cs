@@ -128,12 +128,17 @@ namespace Captura.Audio
         {
             readonly BufferedWaveProvider _innerProvider;
 
-            public MonitoredBufferedWaveProvider(WaveFormat waveFormat)
+            public MonitoredBufferedWaveProvider(NAudio.Wave.WaveFormat waveFormat)
             {
                 _innerProvider = new BufferedWaveProvider(waveFormat);
             }
 
-            WaveFormat IWaveProvider.WaveFormat => _innerProvider.WaveFormat;
+            /// <summary>
+            /// 获取波形格式
+            /// </summary>
+            public NAudio.Wave.WaveFormat WaveFormat => _innerProvider.WaveFormat;
+
+            NAudio.Wave.WaveFormat IWaveProvider.WaveFormat => WaveFormat;
 
             public TimeSpan BufferDuration
             {
